@@ -5,6 +5,11 @@ from llama_index.core import (
     StorageContext,
     load_index_from_storage,
 )
+from llama_index.llms.openai import OpenAI
+from llama_index.core.evaluation import FaithfulnessEvaluator
+
+# create llm
+llm = OpenAI(model="gpt-4", temperature=0.0)
 
 # check if storage already exists
 PERSIST_DIR = "./storage"
@@ -23,3 +28,7 @@ else:
 query_engine = index.as_query_engine()
 response = query_engine.query("What did the author do growing up?")
 print(response)
+
+evaluator = FaithfulnessEvaluator(llm=llm)
+eval_result = evaluator.evaluate_response(response=response)
+print(eval_result)
